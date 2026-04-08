@@ -29,9 +29,11 @@ RUN npm install --production
 # Copiar código do servidor
 COPY server ./server
 
-# Copiar build do VitePress
+# Copiar arquivos markdown originais (necessário para o editor)
+COPY docs ./docs
+
+# Copiar build do VitePress (sobrescreve .vitepress/dist)
 COPY --from=builder /app/docs/.vitepress/dist ./docs/.vitepress/dist
-COPY --from=builder /app/docs/public ./docs/public
 
 # Criar diretório para uploads
 RUN mkdir -p /app/docs/public/uploads
