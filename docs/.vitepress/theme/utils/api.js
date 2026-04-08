@@ -11,7 +11,11 @@ export function getApiUrl() {
 // Helper para fazer requisições autenticadas
 export async function fetchApi(endpoint, options = {}) {
   const token = localStorage.getItem('auth_token');
-  const url = `${getApiUrl()}${endpoint}`;
+  const apiUrl = getApiUrl();
+  const url = `${apiUrl}${endpoint}`;
+  
+  console.log('🌐 API URL:', apiUrl);
+  console.log('📡 Full URL:', url);
   
   const headers = {
     ...options.headers,

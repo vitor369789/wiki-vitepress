@@ -51,27 +51,33 @@
 
 <script setup>
 import { ref } from 'vue';
+import { fetchApi } from '../utils/api.js';
 
+// Usando fetchApi para detectar URL automaticamente em produção
 const emit = defineEmits(['close', 'login-success']);
 
-const email = ref('');
+const username = ref('');
 const password = ref('');
 const loading = ref(false);
 const error = ref('');
 
 async function handleLogin() {
+  if (!username.value || !password.value) {
+    error.value = 'Preencha todos os campos';
+    return;
+  }
+
   loading.value = true;
   error.value = '';
 
   try {
-    const response = await fetch('http://localhost:3000/api/auth/login', {
+    const response = await fetchApi('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify({
-        email: email.value,
+        username: username.value,
         password: password.value
       })
     });
