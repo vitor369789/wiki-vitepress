@@ -2,6 +2,10 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -125,9 +129,22 @@ router.post('/pages', requireAuth, (req, res) => {
     // Salvar o arquivo
     fs.writeFileSync(fullPath, content, 'utf-8');
     
+    // Rebuild do VitePress em background (não esperar terminar)
+    if (process.env.NODE_ENV === 'production') {
+      console.log('🔨 Iniciando rebuild do VitePress...');
+      const projectRoot = path.join(docsDir, '..');
+      execAsync('npm run docs:build', { cwd: projectRoot })
+        .then(() => {
+          console.log('✅ Rebuild do VitePress concluído!');
+        })
+        .catch((error) => {
+          console.error('❌ Erro no rebuild:', error.message);
+        });
+    }
+    
     res.json({
       success: true,
-      message: 'Página salva com sucesso',
+      message: 'Página salva com sucesso. O site será atualizado em alguns segundos.',
       path: pagePath
     });
   } catch (error) {
