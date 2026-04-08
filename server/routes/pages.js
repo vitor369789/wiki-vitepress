@@ -14,6 +14,13 @@ const __dirname = path.dirname(__filename);
 // Diretório base das páginas markdown
 const docsDir = path.join(__dirname, '../../docs');
 
+// Status do rebuild
+let rebuildStatus = {
+  isRebuilding: false,
+  lastRebuild: null,
+  lastError: null
+};
+
 // Middleware de autenticação (simplificado - você pode usar o seu próprio)
 function requireAuth(req, res, next) {
   const token = req.cookies.auth_token || req.headers.authorization?.replace('Bearer ', '');
@@ -138,28 +145,29 @@ router.post('/pages', requireAuth, (req, res) => {
     fs.writeFileSync(fullPath, content, 'utf-8');
     console.log('✅ Arquivo salvo com sucesso!');
     
-    // Commit para Git (para persistência)
+    // Rebuild do VitePress em background
     if (process.env.NODE_ENV === 'production') {
       const projectRoot = path.join(docsDir, '..');
-      console.log('� Fazendo commit no Git...');
       
-      execAsync(`git add "${fullPath}" && git commit -m "Auto: Atualizar ${pagePath}" || true`, { cwd: projectRoot })
-        .then(() => {
-          console.log('✅ Commit realizado!');
-        })
-        .catch((error) => {
-          console.log('⚠️ Commit ignorado:', error.message);
-        });
-      
-      // Rebuild do VitePress em background
-      console.log('🔨 Iniciando rebuild do VitePress...');
-      execAsync('npm run docs:build', { cwd: projectRoot })
-        .then(() => {
-          console.log('✅ Rebuild do VitePress concluído!');
-        })
-        .catch((error) => {
-          console.error('❌ Erro no rebuild:', error.message);
-        });
+      if (!rebuildStatus.isRebuilding) {
+        rebuildStatus.isRebuilding = true;
+        console.log('🔨 Iniciando rebuild do VitePress...');
+        
+        execAsync('npm run docs:build', { cwd: projectRoot })
+          .then(() => {
+            console.log('✅ Rebuild do VitePress concluído!');
+            rebuildStatus.isRebuilding = false;
+            rebuildStatus.lastRebuild = new Date();
+            rebuildStatus.lastError = null;
+          })
+          .catch((error) => {
+            console.error('❌ Erro no rebuild:', error.message);
+            rebuildStatus.isRebuilding = false;
+            rebuildStatus.lastError = error.message;
+          });
+      } else {
+        console.log('⏳ Rebuild já em andamento, aguardando...');
+      }
     }
     
     res.json({
@@ -171,6 +179,11 @@ router.post('/pages', requireAuth, (req, res) => {
     console.error('Erro ao salvar página:', error);
     res.status(500).json({ error: 'Erro ao salvar página' });
   }
+});
+
+// Status do rebuild
+router.get('/rebuild-status', requireAuth, (req, res) => {
+  res.json(rebuildStatus);
 });
 
 // Deletar página

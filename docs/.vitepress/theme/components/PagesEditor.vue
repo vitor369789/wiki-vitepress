@@ -674,7 +674,20 @@ async function saveCurrentPage() {
     if (response.ok) {
       const data = await response.json();
       console.log('✅ Resposta do servidor:', data);
-      alert(data.message || 'Página salva com sucesso!');
+      
+      // Mensagem com instruções claras
+      const message = `✅ Página salva com sucesso!
+
+⏱️ O site está sendo reconstruído (leva ~30-60 segundos).
+
+Para ver as mudanças:
+1. Aguarde 1 minuto
+2. Pressione Ctrl+Shift+R (ou Cmd+Shift+R no Mac)
+   Isso força o reload sem cache
+
+Ou simplesmente aguarde e recarregue a página normalmente.`;
+      
+      alert(message);
       await loadPages();
       if (showNewPage.value) {
         showNewPage.value = false;
