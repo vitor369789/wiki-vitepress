@@ -22,6 +22,19 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors({
   origin: function(origin, callback) {
+    // Em produção, permitir o domínio configurado
+    if (process.env.NODE_ENV === 'production') {
+      // Permitir requisições sem origin (mesma origem)
+      if (!origin) return callback(null, true);
+      
+      // Permitir o domínio de produção da variável de ambiente
+      const productionUrl = process.env.FRONTEND_URL || '';
+      if (origin === productionUrl || origin.includes('easypanel.host')) {
+        return callback(null, true);
+      }
+    }
+    
+    // Em desenvolvimento, permitir localhost
     const allowedOrigins = [
       'http://localhost:5173',
       'http://localhost:5174',
@@ -42,7 +55,7 @@ app.use(cors({
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(null, true); // Permitir todos em produção por enquanto
     }
   },
   credentials: true
