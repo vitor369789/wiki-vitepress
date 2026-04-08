@@ -83,8 +83,10 @@ async function checkAccess() {
 
     const accessResponse = await fetchApi('/api/auth/check-access', {
       method: 'POST',
-      headers,
-      body: JSON.stringify({ path: route.path })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ page: route.path })
     });
 
     if (accessResponse.ok) {

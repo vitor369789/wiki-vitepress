@@ -95,6 +95,12 @@ router.get('/me', (req, res) => {
 
 router.post('/check-access', (req, res) => {
   const { page } = req.body;
+  
+  // Validar se page foi fornecido
+  if (!page) {
+    return res.status(400).json({ error: 'Page path is required' });
+  }
+  
   let token = req.cookies.auth_token;
   
   // Verificar header Authorization
