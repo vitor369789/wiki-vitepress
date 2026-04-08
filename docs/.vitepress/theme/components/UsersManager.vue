@@ -131,6 +131,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { fetchApi, getApiUrl } from '../utils/api.js';
 
 const emit = defineEmits(['refresh']);
 
@@ -201,13 +202,7 @@ async function loadUsers() {
 
 async function getCurrentUser() {
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/auth/me', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
+    const response = await fetchApi('/api/auth/me');
     if (response.ok) {
       const data = await response.json();
       currentUserId.value = data.user.id;
@@ -301,13 +296,8 @@ async function deleteUser() {
   saving.value = true;
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch(`http://localhost:3000/api/users/${deletingUser.value.id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
+    const response = await fetchApi(`/api/users/${deletingUser.value.id}`, {
+      method: 'DELETE'
     });
 
     if (response.ok) {
