@@ -67,6 +67,7 @@ import UsersManager from './UsersManager.vue';
 import PermissionsManager from './PermissionsManager.vue';
 import PagesEditor from './PagesEditor.vue';
 import FilesManager from './FilesManager.vue';
+import { fetchApi } from '../utils/api.js';
 
 const loading = ref(true);
 const isAdmin = ref(false);
