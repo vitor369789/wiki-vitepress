@@ -138,10 +138,21 @@ router.post('/pages', requireAuth, (req, res) => {
     fs.writeFileSync(fullPath, content, 'utf-8');
     console.log('✅ Arquivo salvo com sucesso!');
     
-    // Rebuild do VitePress em background (não esperar terminar)
+    // Commit para Git (para persistência)
     if (process.env.NODE_ENV === 'production') {
-      console.log('🔨 Iniciando rebuild do VitePress...');
       const projectRoot = path.join(docsDir, '..');
+      console.log('� Fazendo commit no Git...');
+      
+      execAsync(`git add "${fullPath}" && git commit -m "Auto: Atualizar ${pagePath}" || true`, { cwd: projectRoot })
+        .then(() => {
+          console.log('✅ Commit realizado!');
+        })
+        .catch((error) => {
+          console.log('⚠️ Commit ignorado:', error.message);
+        });
+      
+      // Rebuild do VitePress em background
+      console.log('🔨 Iniciando rebuild do VitePress...');
       execAsync('npm run docs:build', { cwd: projectRoot })
         .then(() => {
           console.log('✅ Rebuild do VitePress concluído!');
