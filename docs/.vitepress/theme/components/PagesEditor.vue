@@ -443,8 +443,9 @@ async function uploadImageFile(file) {
     console.log('📤 Upload para pasta:', uploadFolder);
     formData.append('folder', uploadFolder);
 
+    const apiUrl = getApiUrl();
     const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/upload', {
+    const response = await fetch(`${apiUrl}/api/upload`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -525,13 +526,7 @@ async function loadImages() {
   loadingImages.value = true;
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/files', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
-    });
+    const response = await fetchApi('/api/files');
 
     if (response.ok) {
       const data = await response.json();
@@ -573,13 +568,7 @@ async function loadPages() {
   loadingPages.value = true;
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/pages', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
-    });
+    const response = await fetchApi('/api/pages');
 
     if (response.ok) {
       const data = await response.json();
@@ -594,13 +583,7 @@ async function loadPages() {
 
 async function loadPage(page) {
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch(`http://localhost:3000/api/pages/${page.path}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
-    });
+    const response = await fetchApi(`/api/pages/${page.path}`);
 
     if (response.ok) {
       const data = await response.json();
@@ -660,14 +643,11 @@ async function saveCurrentPage() {
   saving.value = true;
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/pages', {
+    const response = await fetchApi('/api/pages', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify({
         path: selectedPage.value.path,
         content: editorContent.value
@@ -701,13 +681,8 @@ async function deletePage() {
   deleting.value = true;
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch(`http://localhost:3000/api/pages/${deletingPage.value.path}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
+    const response = await fetchApi(`/api/pages/${deletingPage.value.path}`, {
+      method: 'DELETE'
     });
 
     if (response.ok) {

@@ -273,13 +273,7 @@ async function loadFiles() {
   error.value = '';
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/files', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
-    });
+    const response = await fetchApi('/api/files');
 
     if (response.ok) {
       const data = await response.json();
@@ -303,7 +297,7 @@ async function createFolder() {
 
   try {
     const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/folders', {
+    const response = await fetchApi('http://localhost:3000/api/folders', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
