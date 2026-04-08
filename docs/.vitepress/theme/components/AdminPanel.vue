@@ -48,6 +48,12 @@
         >
           📁 Arquivos
         </button>
+        <button 
+          :class="['tab', { active: activeTab === 'config' }]"
+          @click="activeTab = 'config'"
+        >
+          ⚙️ Configuração
+        </button>
       </div>
 
       <div v-if="activeTab === 'users'" class="tab-content">
@@ -65,6 +71,10 @@
       <div v-if="activeTab === 'files'" class="tab-content">
         <FilesManager />
       </div>
+
+      <div v-if="activeTab === 'config'" class="tab-content">
+        <ConfigEditor />
+      </div>
     </div>
   </div>
 </template>
@@ -75,6 +85,7 @@ import UsersManager from './UsersManager.vue';
 import PermissionsManager from './PermissionsManager.vue';
 import PagesEditor from './PagesEditor.vue';
 import FilesManager from './FilesManager.vue';
+import ConfigEditor from './ConfigEditor.vue';
 import { fetchApi } from '../utils/api.js';
 
 const loading = ref(true);
