@@ -104,6 +104,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { fetchApi } from '../utils/api.js';
 
 const permissions = ref([]);
 const loading = ref(true);
@@ -138,13 +139,7 @@ async function loadPermissions() {
   error.value = '';
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/users/permissions', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
-    });
+    const response = await fetchApi('/api/users/permissions');
 
     if (response.ok) {
       const data = await response.json();
@@ -162,14 +157,11 @@ async function loadPermissions() {
 
 async function togglePermission(perm) {
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/users/permissions', {
+    const response = await fetchApi('/api/users/permissions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify({
         role: perm.role,
         page: perm.page,
