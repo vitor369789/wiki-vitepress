@@ -58,7 +58,7 @@ export default defineConfig({
 
     footer: {
       message: 'Documentação desenvolvida com VitePress',
-      copyright: 'Copyright © 2025 Sua Empresa'
+      copyright: 'Copyright © 2026 iCore'
     },
 
     search: {
