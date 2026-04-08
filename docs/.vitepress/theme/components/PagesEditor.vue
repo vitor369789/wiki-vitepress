@@ -541,7 +541,7 @@ async function loadImages() {
 
 function getSecureImageUrl(url) {
   const token = localStorage.getItem('auth_token');
-  return `http://localhost:3000${url}?token=${token}`;
+  return `${getApiUrl()}${url}?token=${token}`;
 }
 
 function navigateLibrary(path) {

@@ -186,14 +186,11 @@ async function addPermission() {
   formError.value = '';
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/users/permissions', {
+    const response = await fetchApi('/api/users/permissions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify({
         role: formData.value.role,
         page: formData.value.page,

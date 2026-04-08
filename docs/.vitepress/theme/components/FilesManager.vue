@@ -259,7 +259,7 @@ function formatDate(dateString) {
 
 function getSecureImageUrl(url) {
   const token = localStorage.getItem('auth_token');
-  return `http://localhost:3000${url}?token=${token}`;
+  return `${getApiUrl()}${url}?token=${token}`;
 }
 
 function navigateToFolder(path) {
@@ -339,10 +339,11 @@ async function uploadFile(file) {
     
     // Enviar folder como query parameter
     const folderParam = currentFolderPath.value ? `?folder=${encodeURIComponent(currentFolderPath.value)}` : '';
-    console.log('� URL com folder:', `http://localhost:3000/api/upload${folderParam}`);
+    const apiUrl = getApiUrl();
+    console.log('📤 URL com folder:', `${apiUrl}/api/upload${folderParam}`);
 
     const token = localStorage.getItem('auth_token');
-    const response = await fetch(`http://localhost:3000/api/upload${folderParam}`, {
+    const response = await fetch(`${apiUrl}/api/upload${folderParam}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -436,7 +437,7 @@ async function handleDrop(e) {
 }
 
 function copyUrl(url) {
-  const fullUrl = `http://localhost:3000${url}`;
+  const fullUrl = `${getApiUrl()}${url}`;
   navigator.clipboard.writeText(fullUrl).then(() => {
     alert('URL copiada! Use esta URL nas páginas (requer autenticação).');
   });
@@ -454,13 +455,8 @@ async function deleteFile() {
   deleting.value = true;
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch(`http://localhost:3000/api/files/${deletingFile.value.path}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
+    const response = await fetchApi(`/api/files/${deletingFile.value.path}`, {
+      method: 'DELETE'
     });
 
     if (response.ok) {
@@ -482,13 +478,8 @@ async function deleteFolder() {
   deleting.value = true;
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch(`http://localhost:3000/api/folders/${deletingFolder.value.path}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
+    const response = await fetchApi(`/api/folders/${deletingFolder.value.path}`, {
+      method: 'DELETE'
     });
 
     if (response.ok) {
