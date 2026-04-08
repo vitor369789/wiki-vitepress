@@ -38,8 +38,9 @@ COPY --from=builder /app/docs/.vitepress/dist ./docs/.vitepress/dist
 # Criar backup dos arquivos docs (para inicializar volume)
 RUN cp -r /app/docs /app/docs-backup
 
-# Criar diretório para uploads
+# Criar diretórios para dados persistentes
 RUN mkdir -p /app/docs/public/uploads
+RUN mkdir -p /app/data
 
 # Expor porta
 EXPOSE 3000

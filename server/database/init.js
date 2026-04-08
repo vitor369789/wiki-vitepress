@@ -2,14 +2,26 @@ import Database from 'better-sqlite3';
 import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const db = new Database(join(__dirname, 'database.db'));
+// Usar diretório de dados persistente
+const dataDir = join(__dirname, '../../data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const dbPath = join(dataDir, 'database.db');
+console.log('📊 Database path:', dbPath);
+
+const db = new Database(dbPath);
 
 export function initDatabase() {
-  db.exec(`
+  try {
+    console.log('🔧 Inicializando banco de dados...');
+    db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT UNIQUE NOT NULL,
@@ -90,11 +102,15 @@ export function initDatabase() {
     VALUES (?, ?, ?)
   `);
 
-  for (const perm of defaultPermissions) {
-    insertPermission.run(perm.role, perm.page, perm.can_access);
-  }
+    for (const perm of defaultPermissions) {
+      insertPermission.run(perm.role, perm.page, perm.can_access);
+    }
 
-  console.log('✅ Database initialized');
+    console.log('✅ Database initialized');
+  } catch (error) {
+    console.error('❌ Erro ao inicializar banco de dados:', error);
+    throw error;
+  }
 }
 
 export default db;
