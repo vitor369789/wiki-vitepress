@@ -312,7 +312,7 @@ Conteúdo da seção...
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
-import { marked } from 'https://cdn.jsdelivr.net/npm/marked@11.1.1/+esm';
+import { marked } from 'marked';
 
 const pages = ref([]);
 const loadingPages = ref(true);
