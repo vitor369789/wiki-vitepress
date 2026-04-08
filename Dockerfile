@@ -23,8 +23,8 @@ WORKDIR /app
 # Copiar package files
 COPY package*.json ./
 
-# Instalar apenas dependências de produção
-RUN npm install --production
+# Instalar TODAS as dependências (necessário para rebuild do VitePress)
+RUN npm install
 
 # Copiar código do servidor
 COPY server ./server
