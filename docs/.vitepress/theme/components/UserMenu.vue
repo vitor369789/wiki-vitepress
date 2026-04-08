@@ -30,6 +30,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import LoginModal from './LoginModal.vue';
+import { fetchApi } from '../utils/api.js';
 
 const user = ref(null);
 const showMenu = ref(false);
