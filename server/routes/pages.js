@@ -22,10 +22,20 @@ function requireAuth(req, res, next) {
 // Listar todas as páginas markdown
 router.get('/pages', requireAuth, (req, res) => {
   try {
+    console.log('📂 Diretório docs:', docsDir);
+    console.log('📂 Diretório existe?', fs.existsSync(docsDir));
+    
+    if (!fs.existsSync(docsDir)) {
+      console.error('❌ Diretório docs não encontrado!');
+      return res.json({ pages: [], error: 'Diretório não encontrado' });
+    }
+    
     const pages = [];
     
     function scanDirectory(dir, basePath = '') {
+      console.log('🔍 Escaneando:', dir);
       const items = fs.readdirSync(dir);
+      console.log('📄 Itens encontrados:', items.length);
       
       items.forEach(item => {
         const fullPath = path.join(dir, item);
@@ -35,9 +45,11 @@ router.get('/pages', requireAuth, (req, res) => {
         if (stat.isDirectory()) {
           // Ignorar pastas especiais
           if (!item.startsWith('.') && item !== 'node_modules' && item !== 'public') {
+            console.log('📁 Entrando em pasta:', item);
             scanDirectory(fullPath, relativePath);
           }
         } else if (item.endsWith('.md')) {
+          console.log('📄 Arquivo .md encontrado:', relativePath);
           pages.push({
             path: relativePath,
             name: item,
@@ -50,10 +62,11 @@ router.get('/pages', requireAuth, (req, res) => {
     
     scanDirectory(docsDir);
     
+    console.log('✅ Total de páginas encontradas:', pages.length);
     res.json({ pages });
   } catch (error) {
-    console.error('Erro ao listar páginas:', error);
-    res.status(500).json({ error: 'Erro ao listar páginas' });
+    console.error('❌ Erro ao listar páginas:', error);
+    res.status(500).json({ error: 'Erro ao listar páginas', message: error.message });
   }
 });
 
