@@ -62,7 +62,13 @@ const loading = ref(false);
 const error = ref('');
 
 async function handleLogin() {
-  if (!username.value || !password.value) {
+  console.log('🔐 Login attempt:', { username: username.value, password: password.value ? '***' : 'empty' });
+  
+  const user = username.value?.trim();
+  const pass = password.value?.trim();
+  
+  if (!user || !pass) {
+    console.log('❌ Validation failed:', { user: !!user, pass: !!pass });
     error.value = 'Preencha todos os campos';
     return;
   }
@@ -77,8 +83,8 @@ async function handleLogin() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username: username.value,
-        password: password.value
+        username: user,
+        password: pass
       })
     });
 
