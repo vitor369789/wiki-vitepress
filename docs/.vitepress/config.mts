@@ -11,6 +11,7 @@ export default defineConfig({
     nav: [
       { text: 'Início', link: '/' },
       { text: 'Documentação', link: '/documentacao/' },
+      { text: 'Mixtel', link: '/mixtel/troubleshooting/' },
       { text: 'API', link: '/api/' },
       { text: 'FAQ', link: '/faq' },
       { text: 'Admin', link: '/admin/' }
@@ -37,6 +38,24 @@ export default defineConfig({
           items: [
             { text: 'Funcionalidades', link: '/documentacao/recursos/funcionalidades' },
             { text: 'Integrações', link: '/documentacao/recursos/integracoes' }
+          ]
+        }
+      ],
+      '/mixtel/': [
+        {
+          text: 'Troubleshooting',
+          items: [
+            { text: 'Visão Geral', link: '/mixtel/troubleshooting/' },
+            { text: 'Fiberhome', link: '/mixtel/troubleshooting/fiberhome/' },
+            { text: 'Huawei', link: '/mixtel/troubleshooting/huawei/' }
+          ]
+        },
+        {
+          text: 'Equipamentos',
+          items: [
+            { text: 'ONUs', link: '/mixtel/equipamentos/onus' },
+            { text: 'OLTs', link: '/mixtel/equipamentos/olts' },
+            { text: 'Switches', link: '/mixtel/equipamentos/switches' }
           ]
         }
       ],
