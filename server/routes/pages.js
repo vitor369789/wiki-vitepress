@@ -109,25 +109,34 @@ router.post('/pages', requireAuth, (req, res) => {
   try {
     const { path: pagePath, content } = req.body;
     
+    console.log('💾 Salvando página:', pagePath);
+    console.log('📝 Tamanho do conteúdo:', content?.length || 0, 'caracteres');
+    
     if (!pagePath || content === undefined) {
+      console.error('❌ Path ou content ausente');
       return res.status(400).json({ error: 'Path e content são obrigatórios' });
     }
     
     const fullPath = path.join(docsDir, pagePath);
+    console.log('📂 Caminho completo:', fullPath);
     
     // Verificar se o caminho está dentro do diretório docs
     if (!fullPath.startsWith(docsDir)) {
+      console.error('❌ Acesso negado - fora do diretório docs');
       return res.status(403).json({ error: 'Acesso negado' });
     }
     
     // Criar diretórios se não existirem
     const dir = path.dirname(fullPath);
     if (!fs.existsSync(dir)) {
+      console.log('📁 Criando diretório:', dir);
       fs.mkdirSync(dir, { recursive: true });
     }
     
     // Salvar o arquivo
+    console.log('💾 Escrevendo arquivo...');
     fs.writeFileSync(fullPath, content, 'utf-8');
+    console.log('✅ Arquivo salvo com sucesso!');
     
     // Rebuild do VitePress em background (não esperar terminar)
     if (process.env.NODE_ENV === 'production') {
