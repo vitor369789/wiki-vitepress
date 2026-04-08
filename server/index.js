@@ -2,12 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import filesRoutes from './routes/files.js';
 import foldersRoutes from './routes/folders.js';
 import secureFilesRoutes from './routes/secure-files.js';
 import { initDatabase } from './database/init.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
@@ -58,7 +64,22 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
+// Servir arquivos estáticos do VitePress em produção
+if (process.env.NODE_ENV === 'production') {
+  const distPath = path.join(__dirname, '../docs/.vitepress/dist');
+  app.use(express.static(distPath));
+  
+  // SPA fallback - redirecionar todas as rotas não-API para index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
 app.listen(PORT, () => {
   console.log(`🚀 Auth server running on http://localhost:${PORT}`);
-  console.log(`📚 Wiki running on http://localhost:5173`);
+  if (process.env.NODE_ENV === 'production') {
+    console.log(`📚 Wiki serving static files from production build`);
+  } else {
+    console.log(`📚 Wiki dev server should run on http://localhost:5173`);
+  }
 });
