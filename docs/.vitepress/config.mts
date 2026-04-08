@@ -29,6 +29,7 @@ export default defineConfig({
         {
           text: 'Guias',
           items: [
+            { text: 'Guia do Administrador', link: '/documentacao/guia-admin' },
             { text: 'Instalação', link: '/documentacao/guias/instalacao' },
             { text: 'Configuração', link: '/documentacao/guias/configuracao' }
           ]
