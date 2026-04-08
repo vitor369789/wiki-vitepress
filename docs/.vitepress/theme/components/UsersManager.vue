@@ -178,13 +178,7 @@ async function loadUsers() {
   error.value = '';
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch('http://localhost:3000/api/users', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
-    });
+    const response = await fetchApi('/api/users');
 
     if (response.ok) {
       const data = await response.json();
@@ -245,10 +239,9 @@ async function saveUser() {
   formError.value = '';
 
   try {
-    const token = localStorage.getItem('auth_token');
     const url = editingUser.value 
-      ? `http://localhost:3000/api/users/${editingUser.value.id}`
-      : 'http://localhost:3000/api/users';
+      ? `/api/users/${editingUser.value.id}`
+      : '/api/users';
     
     const method = editingUser.value ? 'PUT' : 'POST';
     
@@ -266,13 +259,11 @@ async function saveUser() {
           role: formData.value.role
         };
 
-    const response = await fetch(url, {
+    const response = await fetchApi(url, {
       method,
       headers: {
-        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify(body)
     });
 
