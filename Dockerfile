@@ -35,8 +35,15 @@ COPY docs ./docs
 # Copiar build do VitePress (sobrescreve .vitepress/dist)
 COPY --from=builder /app/docs/.vitepress/dist ./docs/.vitepress/dist
 
+# Criar backup dos arquivos docs (para inicializar volume)
+RUN cp -r /app/docs /app/docs-backup
+
 # Criar diretório para uploads
 RUN mkdir -p /app/docs/public/uploads
+
+# Copiar script de inicialização
+COPY init-volume.sh /app/init-volume.sh
+RUN chmod +x /app/init-volume.sh
 
 # Expor porta
 EXPOSE 3000
@@ -45,5 +52,5 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Comando para iniciar
-CMD ["node", "server/index.js"]
+# Comando para iniciar (com inicialização de volume)
+CMD ["/app/init-volume.sh"]
