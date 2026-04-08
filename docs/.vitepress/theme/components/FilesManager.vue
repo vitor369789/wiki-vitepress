@@ -193,6 +193,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { fetchApi, getApiUrl } from '../utils/api.js';
 
 const allItems = ref([]);
 const currentFolderPath = ref('');
