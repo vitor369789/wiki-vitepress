@@ -18,6 +18,11 @@ const __dirname = dirname(__filename);
 
 dotenv.config();
 
+// Inicializar volume se necessário (em produção)
+if (process.env.NODE_ENV === 'production') {
+  await import('./init-volume.js');
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
