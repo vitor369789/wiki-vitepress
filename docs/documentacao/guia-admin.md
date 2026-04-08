@@ -331,9 +331,13 @@ show mac gpon onu 1/1/1
 
 ## 🔗 Links Relacionados
 
-- [Manual da ONU](/equipamentos/onus/fiberhome)
-- [Comandos OLT](/comandos/olt-fiberhome)
-- [Troubleshooting Geral](/troubleshooting/)
+- Manual da ONU Fiberhome
+- Comandos OLT Fiberhome
+- Troubleshooting Geral
+
+::: tip DICA
+Crie essas páginas conforme necessário usando o Editor de Páginas!
+:::
 
 ---
 
