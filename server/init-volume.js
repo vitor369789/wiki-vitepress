@@ -14,8 +14,27 @@ console.log('📂 Docs path:', docsPath);
 console.log('📂 Backup path:', backupPath);
 console.log('📂 Dist path:', distPath);
 
-// Verificar se o volume está vazio ou sem build
-const needsInit = !fs.existsSync(distPath) || fs.readdirSync(distPath).length === 0;
+// Verificar conteúdo do dist
+if (fs.existsSync(distPath)) {
+  const distFiles = fs.readdirSync(distPath);
+  console.log('📄 Arquivos em dist:', distFiles.length);
+  
+  // Verificar se admin/index.html existe (indica build completo)
+  const adminIndexPath = path.join(distPath, 'admin', 'index.html');
+  const hasAdminPage = fs.existsSync(adminIndexPath);
+  console.log('🔍 Página admin existe?', hasAdminPage);
+  
+  if (!hasAdminPage && distFiles.length > 0) {
+    console.log('⚠️ Build incompleto detectado! Dist tem arquivos mas falta admin page.');
+  }
+} else {
+  console.log('❌ Diretório dist não existe!');
+}
+
+// Verificar se o volume está vazio ou sem build completo
+const needsInit = !fs.existsSync(distPath) || 
+                  fs.readdirSync(distPath).length === 0 ||
+                  !fs.existsSync(path.join(distPath, 'admin', 'index.html'));
 
 if (needsInit) {
   console.log('📦 Volume vazio ou sem build detectado!');
