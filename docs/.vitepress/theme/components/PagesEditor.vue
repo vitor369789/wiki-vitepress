@@ -313,6 +313,7 @@ Conteúdo da seção...
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import { marked } from 'marked';
+import { fetchApi, getApiUrl } from '../utils/api.js';
 
 const pages = ref([]);
 const loadingPages = ref(true);
