@@ -19,18 +19,41 @@ Quando você edita arquivos markdown no Editor de Páginas:
 2. Vá no seu serviço **wiki-vitepress**
 3. Clique em **Settings** ou **Configurações**
 
-### Passo 2: Adicionar Volume
+### Passo 2: Configurar Variáveis de Ambiente
 
-Procure pela seção **Mounts** ou **Volumes** e adicione:
+**IMPORTANTE:** Antes de adicionar volumes, configure as variáveis de ambiente:
 
+Vá em **Environment** ou **Settings** e adicione:
+
+```env
+JWT_SECRET=sua-chave-secreta-super-segura-aqui
+NODE_ENV=production
+PORT=3000
+ADMIN_EMAIL=admin@exemplo.com
+ADMIN_PASSWORD=admin123
+```
+
+⚠️ **Troque `JWT_SECRET` por um valor aleatório e seguro!**
+
+### Passo 3: Adicionar Volumes
+
+Procure pela seção **Mounts** ou **Volumes** e adicione **2 volumes**:
+
+**Volume 1 - Documentos:**
 ```
 Container Path: /app/docs
-Volume Name: wiki-docs-volume
+Volume Name: wiki-docs
 ```
 
-### Passo 3: Rebuild
+**Volume 2 - Banco de Dados:**
+```
+Container Path: /app/data
+Volume Name: wiki-data
+```
 
-Após adicionar o volume, faça **Rebuild** do serviço.
+### Passo 4: Rebuild
+
+Após adicionar variáveis e volumes, faça **Rebuild** do serviço.
 
 ---
 
