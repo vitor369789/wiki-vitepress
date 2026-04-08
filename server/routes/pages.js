@@ -186,6 +186,41 @@ router.get('/rebuild-status', requireAuth, (req, res) => {
   res.json(rebuildStatus);
 });
 
+// Trigger rebuild manual
+router.post('/rebuild', requireAuth, (req, res) => {
+  if (rebuildStatus.isRebuilding) {
+    return res.json({ 
+      success: false, 
+      message: 'Rebuild já em andamento',
+      status: rebuildStatus 
+    });
+  }
+
+  const projectRoot = path.join(docsDir, '..');
+  rebuildStatus.isRebuilding = true;
+  
+  console.log('🔨 Rebuild manual iniciado...');
+  
+  execAsync('npm run docs:build', { cwd: projectRoot })
+    .then(() => {
+      console.log('✅ Rebuild manual concluído!');
+      rebuildStatus.isRebuilding = false;
+      rebuildStatus.lastRebuild = new Date();
+      rebuildStatus.lastError = null;
+    })
+    .catch((error) => {
+      console.error('❌ Erro no rebuild manual:', error.message);
+      rebuildStatus.isRebuilding = false;
+      rebuildStatus.lastError = error.message;
+    });
+
+  res.json({ 
+    success: true, 
+    message: 'Rebuild iniciado! Aguarde 30-60 segundos.',
+    status: rebuildStatus 
+  });
+});
+
 // Deletar página
 router.delete('/pages/:path(*)', requireAuth, (req, res) => {
   try {

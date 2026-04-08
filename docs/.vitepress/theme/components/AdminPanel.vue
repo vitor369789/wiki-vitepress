@@ -12,8 +12,16 @@
     </div>
 
     <div v-else class="admin-content">
-      <h1>⚙️ Painel Administrativo</h1>
-      <p class="subtitle">Gerencie usuários e permissões do sistema</p>
+      <div class="header-section">
+        <div>
+          <h1>⚙️ Painel Administrativo</h1>
+          <p class="subtitle">Gerencie usuários e permissões do sistema</p>
+        </div>
+        <button @click="triggerRebuild" :disabled="rebuilding" class="btn-rebuild">
+          <span v-if="!rebuilding">🔨 Rebuild Site</span>
+          <span v-else>⏳ Rebuilding...</span>
+        </button>
+      </div>
 
       <div class="tabs">
         <button 
@@ -72,6 +80,49 @@ import { fetchApi } from '../utils/api.js';
 const loading = ref(true);
 const isAdmin = ref(false);
 const activeTab = ref('users');
+const rebuilding = ref(false);
+
+async function triggerRebuild() {
+  if (rebuilding.value) return;
+  
+  rebuilding.value = true;
+  
+  try {
+    const response = await fetchApi('/api/rebuild', {
+      method: 'POST'
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      alert('🔨 Rebuild iniciado!\n\nAguarde 30-60 segundos e recarregue a página (Ctrl+Shift+R) para ver as mudanças.');
+      
+      // Verificar status a cada 5 segundos
+      const checkStatus = setInterval(async () => {
+        const statusResponse = await fetchApi('/api/rebuild-status');
+        const status = await statusResponse.json();
+        
+        if (!status.isRebuilding) {
+          clearInterval(checkStatus);
+          rebuilding.value = false;
+          
+          if (status.lastError) {
+            alert('❌ Erro no rebuild: ' + status.lastError);
+          } else {
+            alert('✅ Rebuild concluído!\n\nRecarregue a página (Ctrl+Shift+R) para ver as mudanças.');
+          }
+        }
+      }, 5000);
+    } else {
+      alert(data.message);
+      rebuilding.value = false;
+    }
+  } catch (error) {
+    console.error('Erro ao iniciar rebuild:', error);
+    alert('Erro ao iniciar rebuild');
+    rebuilding.value = false;
+  }
+}
 
 async function checkAdmin() {
   loading.value = true;
@@ -144,6 +195,36 @@ onMounted(() => {
 .access-denied h1 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.btn-rebuild {
+  padding: 0.75rem 1.5rem;
+  background: var(--vp-c-brand);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.btn-rebuild:hover:not(:disabled) {
+  background: var(--vp-c-brand-dark);
+  transform: translateY(-2px);
+}
+
+.btn-rebuild:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .admin-content h1 {
