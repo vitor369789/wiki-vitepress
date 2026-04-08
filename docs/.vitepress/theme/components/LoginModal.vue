@@ -11,11 +11,11 @@
           <label for="email">Email</label>
           <input
             id="email"
-            v-model="email"
-            type="email"
+            v-model="username"
+            type="text"
             placeholder="seu@email.com"
             required
-            autocomplete="email"
+            autocomplete="username"
           />
         </div>
 
