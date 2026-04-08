@@ -566,16 +566,25 @@ function syncScroll() {
 
 async function loadPages() {
   loadingPages.value = true;
+  console.log('📄 Carregando páginas...');
 
   try {
     const response = await fetchApi('/api/pages');
+    console.log('📡 Resposta da API:', response.status, response.statusText);
 
     if (response.ok) {
       const data = await response.json();
+      console.log('📚 Dados recebidos:', data);
+      console.log('📄 Número de páginas:', data.pages?.length || 0);
       pages.value = data.pages.sort((a, b) => a.path.localeCompare(b.path));
+      console.log('✅ Páginas carregadas:', pages.value.length);
+    } else {
+      console.error('❌ Erro na resposta:', response.status);
+      const errorData = await response.json();
+      console.error('❌ Detalhes do erro:', errorData);
     }
   } catch (err) {
-    console.error(err);
+    console.error('❌ Erro ao carregar páginas:', err);
   } finally {
     loadingPages.value = false;
   }
