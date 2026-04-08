@@ -83,7 +83,7 @@ async function handleLogin() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username: user,
+        email: user,
         password: pass
       })
     });
