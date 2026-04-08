@@ -296,14 +296,11 @@ async function createFolder() {
   folderError.value = '';
 
   try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetchApi('http://localhost:3000/api/folders', {
+    const response = await fetchApi('/api/folders', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify({
         name: newFolderName.value,
         parent: currentFolderPath.value
