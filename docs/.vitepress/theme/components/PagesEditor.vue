@@ -649,22 +649,32 @@ function cancelEdit() {
 async function saveCurrentPage() {
   if (!selectedPage.value) return;
 
+  console.log('💾 Salvando página:', selectedPage.value.path);
+  console.log('📝 Conteúdo atual:', editorContent.value.substring(0, 100) + '...');
+
   saving.value = true;
 
   try {
+    const payload = {
+      path: selectedPage.value.path,
+      content: editorContent.value
+    };
+    console.log('📤 Enviando payload:', payload);
+
     const response = await fetchApi('/api/pages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        path: selectedPage.value.path,
-        content: editorContent.value
-      })
+      body: JSON.stringify(payload)
     });
 
+    console.log('📡 Resposta:', response.status);
+
     if (response.ok) {
-      alert('Página salva com sucesso!');
+      const data = await response.json();
+      console.log('✅ Resposta do servidor:', data);
+      alert(data.message || 'Página salva com sucesso!');
       await loadPages();
       if (showNewPage.value) {
         showNewPage.value = false;
