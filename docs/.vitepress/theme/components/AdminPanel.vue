@@ -84,12 +84,7 @@ async function checkAdmin() {
       return;
     }
 
-    const response = await fetch('http://localhost:3000/api/auth/me', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: 'include'
-    });
+    const response = await fetchApi('/api/auth/me');
 
     if (response.ok) {
       const data = await response.json();

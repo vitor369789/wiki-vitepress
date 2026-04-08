@@ -58,12 +58,7 @@ async function checkAuth() {
     }
 
     if (token) {
-      const response = await fetch('http://localhost:3000/api/auth/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        credentials: 'include'
-      });
+      const response = await fetchApi('/api/auth/me');
 
       if (response.ok) {
         const data = await response.json();
@@ -82,14 +77,8 @@ async function checkAuth() {
 
 async function handleLogout() {
   try {
-    const token = localStorage.getItem('auth_token');
-    
-    await fetch('http://localhost:3000/api/auth/logout', {
-      method: 'POST',
-      headers: token ? {
-        'Authorization': `Bearer ${token}`
-      } : {},
-      credentials: 'include'
+    await fetchApi('/api/auth/logout', {
+      method: 'POST'
     });
 
     localStorage.removeItem('auth_token');

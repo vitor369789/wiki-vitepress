@@ -34,6 +34,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vitepress';
+import { fetchApi } from '../utils/api.js';
 import LoginModal from './LoginModal.vue';
 
 const route = useRoute();
@@ -66,10 +67,7 @@ async function checkAccess() {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const userResponse = await fetch('http://localhost:3000/api/auth/me', {
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-      credentials: 'include'
-    });
+    const userResponse = await fetchApi('/api/auth/me');
 
     if (userResponse.ok) {
       const data = await userResponse.json();
@@ -83,11 +81,10 @@ async function checkAccess() {
       localStorage.removeItem('user');
     }
 
-    const accessResponse = await fetch('http://localhost:3000/api/auth/check-access', {
+    const accessResponse = await fetchApi('/api/auth/check-access', {
       method: 'POST',
       headers,
-      credentials: 'include',
-      body: JSON.stringify({ page: route.path })
+      body: JSON.stringify({ path: route.path })
     });
 
     if (accessResponse.ok) {
