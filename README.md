@@ -192,9 +192,8 @@ Este projeto está sob a licença MIT.
 
 ## 💬 Suporte
 
-- Email: suporte@seu-sistema.com
-- Issues: [GitHub Issues](https://github.com/seu-usuario/wiki/issues)
-- Comunidade: [Discord](https://discord.gg/seu-servidor)
+- Email: vitor.rodrigues@vmcore.com.br
+- Issues: [GitHub Issues](https://github.com/vitor369789/wiki-vitepress/issues)
 
 ---
 
