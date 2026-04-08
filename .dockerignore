@@ -1,0 +1,11 @@
+node_modules
+.git
+.gitignore
+*.md
+.env
+.vscode
+dist
+.cache
+docs/.vitepress/cache
+docs/.vitepress/dist
+*.log
