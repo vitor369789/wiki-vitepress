@@ -10,6 +10,7 @@ import userRoutes from './routes/users.js';
 import filesRoutes from './routes/files.js';
 import foldersRoutes from './routes/folders.js';
 import secureFilesRoutes from './routes/secure-files.js';
+import pagesRoutes from './routes/pages.js';
 import { initDatabase } from './database/init.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -72,6 +73,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api', filesRoutes);
 app.use('/api', foldersRoutes);
+app.use('/api', pagesRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
